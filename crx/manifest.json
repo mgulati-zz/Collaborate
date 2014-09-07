@@ -1,0 +1,34 @@
+{
+  "name": "Collaborate",
+  "version": "0.3",
+  "manifest_version": 2,
+  "description": "Login with facebook groups",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.facebook.com/*",
+        "https://groupwork.firebaseapp.com/*",
+        "https://www.dropbox.com/*",
+        "https://github.com/*"
+      ],
+      "js": [
+        "src/jquery.js",
+        "src/firebase.js",
+        "src/inject/inject.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    "src/img/dbLogo.png",
+    "src/img/fbLogo.png",
+    "src/img/ghLogo.png",
+    "src/img/menuLogo.png"
+  ],
+  "icons": {
+    "48": "src/img/icons/48.png",
+    "128": "src/img/icons/128.png" 
+  },
+  "permissions": [
+    "storage"
+  ]
+}
