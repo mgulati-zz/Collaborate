@@ -71,6 +71,7 @@
 			width: 64px;
 			border: none;
 			margin: 30px;
+      cursor: pointer;
 		}
 
 	</style>
@@ -83,9 +84,9 @@
     	<h3>Switch apps on the fly from within your favorite services<br/>
     		Use your existing facebook groups for easier collaboration</h3>
 
-    	<img src="icons/fbLogo.png" class="app">
-    	<img src="icons/dbLogo.png" class="app">
-      <img src="icons/ghLogo.png" class="app">
+    	<img src="icons/fbLogo.png" href="https://www.facebook.com/" class="app">
+    	<img src="icons/dbLogo.png" href="https://www.dropbox.com/" class="app">
+      <img src="icons/ghLogo.png" href="https://github.com/" class="app">
 
     	<br/><button id="install-button" type="button" class="btn btn-lg custom">Add To Chrome</button>
     	<button type="button" class="btn btn-lg customFB" disabled>Log In with Facebook</button>
@@ -108,7 +109,7 @@
             'uid': user.uid
           });
 	    		_user = user;
-	    		root.child('users').child(user.uid).set({
+	    		root.child('users').child(user.uid).update({
 	        		displayName: user.displayName,
 	        		fb_id: user.id,
 	        		fb_token: user.accessToken,
@@ -119,23 +120,22 @@
       				dataType: 'json',
       				async: true,
       				success: function(data) {
-                root.child('users').child(user.uid).child('groups').remove(function() {
-                  for (group in data.data) {
-    						    root.child('users').child(user.uid).child('groups').child(data.data[group].id).set(data.data[group].name)
-                    root.child('groups').child(data.data[group].id).set({
-                      name: data.data[group].name,
-                      fbUrl: "https://www.facebook.com/groups/" + data.data[group].id
-                    })
-                    root.child('groups').child(data.data[group].id).child('users').child(user.uid).set(user.displayName); 
-                  }
-                });
+                for (group in data.data) {
+  						    root.child('users').child(user.uid).child('groups').child(data.data[group].id).set(data.data[group].name);
+                  root.child('groups').child(data.data[group].id).update({
+                    name: data.data[group].name,
+                    fbUrl: "https://www.facebook.com/groups/" + data.data[group].id
+                  });
+                  root.child('groups').child(data.data[group].id).child('users').child(_user.uid).set(_user.displayName); 
+                }
     					}
       			})
 	    	};
 	    });
 
       $('.custom').click(function() {
-        chrome.webstore.install();
+        chrome.webstore.install("https://chrome.google.com/webstore/detail/kbddfiknlfmogkphdbmjefigmnelaceg",
+          function() {window.location.reload()});
       });
 
     	$('.customFB').click(function() {
@@ -144,6 +144,10 @@
           scope: "user_groups"
         });
     	});
+
+      $('.app').click(function() {
+        window.location = $(this).attr('href');
+      });
 
     </script>
 
